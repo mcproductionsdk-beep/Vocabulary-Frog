@@ -17,7 +17,7 @@ body{background:#203a67}
  #game .hud{grid-template-columns:1fr auto;gap:3px}
  #game .target{grid-column:1/-1;grid-row:1;justify-self:center;max-width:100%}
  #game .mobile-controls{
-   flex:none;grid-template-columns:minmax(0,1fr) auto minmax(44px,1fr);
+   flex:none;grid-template-columns:repeat(3,44px) minmax(0,1fr) 54px;
    grid-template-rows:repeat(3,44px);gap:2px;
    margin-top:3px;padding:3px 8px;
    background:#0b203a;border:2px solid #3c5b78;border-radius:10px;
@@ -27,12 +27,13 @@ body{background:#203a67}
    background:transparent;color:#a1bbd0;box-shadow:none;font-size:22px;
  }
  #game .mobile-controls button:active{background:#294969;color:#fff}
+ #game .wrap{touch-action:none}
  #touchForward{grid-area:1 / 2}
  #touchLeft{grid-area:2 / 1;justify-self:end}
  #touchRight{grid-area:2 / 3;justify-self:start}
  #touchBack{grid-area:3 / 2}
  #game .mobile-controls .boost{
-   grid-area:3 / 3;justify-self:end;width:54px;height:54px;align-self:end;
+   grid-area:3 / 5;justify-self:end;width:54px;height:54px;align-self:end;
    border:2px solid #526b84;border-radius:50%;background:#132c49;
    color:#f3d64e;font-size:10px;
  }
@@ -98,7 +99,8 @@ function land(){
 }
 function wrapDist(a,b){var d=a-b;while(d>.6)d-=1.2;while(d<-.6)d+=1.2;return d}function hurt(t){if(invincible>0)return;lives--;invincible=.8;bad();flash(t,0);hud();if(lives<=0){running=false;E("gameOver").classList.add("show")}}
 var bankKeys=new Set(), bankPointers=new Map();
-function clearBankInput(){bankKeys.clear();bankPointers.clear()}
+var swipe=null;
+function clearBankInput(){bankKeys.clear();bankPointers.clear();swipe=null}
 window.addEventListener("blur",clearBankInput);
 document.addEventListener("visibilitychange",function(){if(document.hidden)clearBankInput()});
 function update(dt){
@@ -174,6 +176,26 @@ for(const [id,direction] of [["touchLeft",-1],["touchRight",1]]){
  for(const event of ["pointerup","pointercancel","lostpointercapture"]){
    button.addEventListener(event,e=>bankPointers.delete(e.pointerId));
  }
+}
+wrap.addEventListener("pointerdown",e=>{
+ if(e.pointerType!=="touch"||!running||paused||swipe)return;
+ swipe={id:e.pointerId,x:e.clientX,y:e.clientY};
+ wrap.setPointerCapture(e.pointerId);
+});
+wrap.addEventListener("pointerup",e=>{
+ if(swipe?.id!==e.pointerId)return;
+ const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;
+ swipe=null;
+ if(!running||paused||frog.jump||Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+ if(Math.abs(dy)>=Math.abs(dx)){
+   const step=dy<0?1:-1;
+   if(frog.dir===step)leap(step);
+ }else if(frog.row===0||frog.row===5){
+   frog.x=Math.max(.06,Math.min(.94,frog.x+Math.sign(dx)*.12));
+ }
+});
+for(const event of ["pointercancel","lostpointercapture"]){
+ wrap.addEventListener(event,e=>{if(swipe?.id===e.pointerId)swipe=null});
 }
 touchLeap("touchForward",1,1);touchLeap("touchBack",-1,-1);
 (function(){var b=E("touchBoost");function release(){boostHeld=false;}b.addEventListener("pointerdown",function(e){e.preventDefault();if(!running||paused)return;boostHeld=true;try{b.setPointerCapture(e.pointerId)}catch(x){}},{passive:false});["pointerup","pointercancel","lostpointercapture"].forEach(function(t){b.addEventListener(t,release)});b.addEventListener("contextmenu",function(e){e.preventDefault()});window.addEventListener("blur",release);document.addEventListener("visibilitychange",function(){if(document.hidden)release()});})();
