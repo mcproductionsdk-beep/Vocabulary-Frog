@@ -2,25 +2,25 @@
 <title>Word Frog — Gameplay Engine Test</title><style>
 *{box-sizing:border-box}body{margin:0;background:#7bc7e5;color:#fff;font-family:"Courier New",monospace;image-rendering:pixelated}.app{width:min(1120px,calc(100vw - 12px));margin:6px auto;padding:10px;background:#17365f;border:5px solid #102744;box-shadow:0 0 0 4px #f3d64e}.logo{text-align:center;font:900 clamp(27px,4vw,44px) "Courier New";letter-spacing:4px;text-shadow:4px 4px #102744;margin:4px}.screen{display:none}.screen.active{display:block}.grid{display:grid;grid-template-columns:1.35fr .75fr;gap:12px}.card{background:#f4e7bd;color:#152945;border:4px solid #152945;padding:12px;box-shadow:inset 0 0 0 3px #fff5d7}h2{color:#26713d;font-size:18px;margin:0 0 8px}.help{color:#294361;font-size:13px;font-weight:bold;line-height:1.4}textarea,select{width:100%;background:#fff8d9;color:#152945;border:4px solid #152945;padding:9px;font:700 14px "Courier New"}textarea{height:min(38vh,285px);min-height:180px}button{font:900 14px "Courier New";padding:10px 14px;margin:4px;border:4px solid #152945;background:#5cc5d8;color:#102744;cursor:pointer;box-shadow:inset -3px -3px #2e7c9a,inset 3px 3px #b8f5ee}.primary{background:#79d85b}.yellow{background:#f3d64e}.pink{background:#ef6c88}.wide{width:100%;font-size:18px}.preview{margin-top:8px;padding:9px;background:#d8eef0;color:#19324e;border:3px solid #19324e;font-size:12px}.error{color:#b9223e;min-height:18px;font-weight:bold}.hud{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:7px 0;font:900 13px "Courier New";text-shadow:2px 2px #102744}.target{text-align:center;background:#f3d64e;color:#152945;border:4px solid #152945;padding:8px;font-size:clamp(15px,2vw,23px);text-shadow:none}.target b{color:#26713d}.progress{text-align:right}.wrap{height:min(68vh,650px);max-height:calc(100vh - 170px);min-height:390px;position:relative;border:4px solid #102744;background:#3189bd}canvas{width:100%;height:100%;display:block;image-rendering:pixelated}.buttons{text-align:center}.tip{text-align:center;font-size:11px;font-weight:bold;color:#d9edff;text-shadow:2px 2px #102744}.overlay{display:none;position:absolute;inset:0;background:#102744e8;z-index:5;align-items:center;justify-content:center;text-align:center}.overlay.show{display:flex}.big{font:900 clamp(28px,5vw,48px) "Courier New";color:#ef6c88;text-shadow:4px 4px #000}.msg{font:900 clamp(17px,2.4vw,27px) "Courier New";margin:10px}.toast{display:none;position:absolute;left:50%;top:12%;transform:translateX(-50%);z-index:4;font:900 24px "Courier New";text-shadow:3px 3px #102744}.mobile-controls{display:none}
 @media(max-width:760px){.grid{grid-template-columns:1fr}#game.active{display:flex;flex-direction:column}#game .buttons{order:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin:2px 0 5px}#game .buttons button{margin:0;padding:8px 2px;font-size:10px;min-width:0}#game .hud{order:2;grid-template-columns:1fr 1fr;margin:4px 0}.target{grid-column:1/-1;grid-row:1}#game .wrap{order:3;height:58vh;max-height:none;min-height:310px}#game .mobile-controls{order:4;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px 2px 3px}#game .mobile-controls button{margin:0;min-height:68px;font-size:17px;touch-action:none;user-select:none;-webkit-user-select:none}#game .mobile-controls .forward{background:#79d85b}#game .mobile-controls .back{background:#f3d64e}#game .mobile-controls .boost{grid-column:1/-1;background:#ef6c88;min-height:62px}#game .tip{display:none}}
-html,body{height:100%;overflow:hidden}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
 body{background:#203a67}
-.app{box-sizing:border-box;width:100%;height:100dvh;margin:0;padding:4px;display:flex;flex-direction:column;min-height:0;border:0;box-shadow:none;background:transparent}
+.app{box-sizing:border-box;width:100%;height:100svh;margin:0;padding:4px 4px max(4px,env(safe-area-inset-bottom));display:flex;flex-direction:column;min-height:0;border:0;box-shadow:none;background:transparent}
 .logo{flex:none;order:0;color:#78df62;font-size:clamp(20px,3vw,36px);margin:0 0 4px}
 #game.active{display:flex;flex-direction:column;flex:1;min-height:0}
 #game .buttons{order:1;flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,120px));justify-content:center;gap:5px;margin:0 0 5px}
 #game .buttons button{margin:0;min-width:0;min-height:44px;padding:4px 2px;font-size:clamp(9px,2.2vw,13px)}
 #game .hud{order:2;flex:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin:3px 0}
-#game .target{max-width:55vw;overflow-wrap:anywhere;padding:7px;font-size:clamp(14px,2vw,21px)}
+#game .target{max-width:55vw;overflow-wrap:anywhere;padding:7px;font-size:clamp(19px,2.6vw,30px)}
 #game .wrap{order:3;flex:1 1 0;width:100%;height:0;min-height:0;max-height:none;margin:0;overflow:hidden;border:4px solid #0c1938}
 #game .tip{order:5;flex:none;margin:2px}
 @media(max-width:760px){
  #game .hud{grid-template-columns:1fr auto;gap:3px}
  #game .target{grid-column:1/-1;grid-row:1;justify-self:center;max-width:100%}
- #game .mobile-controls{flex:none;grid-template-columns:repeat(3,minmax(0,1fr));padding:4px 0 0;gap:4px}
- #game .mobile-controls button,#game .mobile-controls .boost{grid-column:auto;min-height:48px;font-size:12px;padding:2px}
+ #game .mobile-controls{flex:none;grid-template-columns:repeat(5,minmax(0,1fr));padding:4px 0 0;gap:4px}
+ #game .mobile-controls button,#game .mobile-controls .boost{grid-column:auto;min-height:44px;font-size:clamp(9px,2.6vw,12px);padding:2px}
 }
 </style></head><body><main class="app"><div class="logo">VOCABULARY FROG</div>
-<section id="engineTest" class="screen active"><div class="card" style="text-align:center"><h2>VOCABULARY FROG · ENGINE TEST</h2><p>Gameplay only · Sample vocabulary · No teacher menu</p><button id="testStart" class="primary">TEST FROG ENGINE</button><div id="engineError" class="error"></div></div></section><section id="game" class="screen"><div class="hud"><div>SCORE <span id="score">0</span> · <span id="lives">❤❤❤</span></div><div id="target" class="target"></div><div id="progress" class="progress"></div></div><div id="wrap" class="wrap"><canvas id="canvas"></canvas><div id="toast" class="toast"></div><div id="pauseOverlay" class="overlay"><div class="big" style="color:#f3d64e">PAUSED</div></div><div id="gameOver" class="overlay"><div><div class="big">GAME OVER</div><div class="msg">Nice try, your grandma would be proud</div><button id="again" class="primary">PLAY AGAIN</button><button id="overMenu" class="pink">MAIN MENU</button></div></div></div><div class="buttons"><button id="pause" class="yellow">PAUSE</button><button id="restart">RESTART</button><button id="mainMenu" class="pink">MAIN MENU</button><button id="sound">🔊 SOUND ON</button></div><div class="mobile-controls" aria-label="Touch controls"><button id="touchForward" class="forward" type="button">▲ FORWARD</button><button id="touchBack" class="back" type="button">▼ BACK</button><button id="touchBoost" class="boost" type="button">⚡ BOOST (HOLD)</button></div><div class="tip">FORWARD: ↑ / W · BACK: ↓ / S · BOOST: SPACE · PAUSE: P</div></section></main>
+<section id="engineTest" class="screen active"><div class="card" style="text-align:center"><h2>VOCABULARY FROG · ENGINE TEST</h2><p>Gameplay only · Sample vocabulary · No teacher menu</p><button id="testStart" class="primary">TEST FROG ENGINE</button><div id="engineError" class="error"></div></div></section><section id="game" class="screen"><div class="hud"><div>SCORE <span id="score">0</span> · <span id="lives">❤❤❤</span></div><div id="target" class="target"></div><div id="progress" class="progress"></div></div><div id="wrap" class="wrap"><canvas id="canvas"></canvas><div id="toast" class="toast"></div><div id="pauseOverlay" class="overlay"><div class="big" style="color:#f3d64e">PAUSED</div></div><div id="gameOver" class="overlay"><div><div class="big">GAME OVER</div><div class="msg">Nice try, your grandma would be proud</div><button id="again" class="primary">PLAY AGAIN</button><button id="overMenu" class="pink">MAIN MENU</button></div></div></div><div class="buttons"><button id="pause" class="yellow">PAUSE</button><button id="restart">RESTART</button><button id="mainMenu" class="pink">MAIN MENU</button><button id="sound">🔊 SOUND ON</button></div><div class="mobile-controls" aria-label="Touch controls"><button id="touchLeft" type="button" aria-label="Move left">◀ LEFT</button><button id="touchForward" class="forward" type="button">▲ FORWARD</button><button id="touchBack" class="back" type="button">▼ BACK</button><button id="touchBoost" class="boost" type="button">BOOST</button><button id="touchRight" type="button" aria-label="Move right">RIGHT ▶</button></div><div class="tip">BANK: ← → / A D · FORWARD: ↑ / W · BACK: ↓ / S · BOOST: SPACE · PAUSE: P</div></section></main>
 <script>
 (function(){"use strict";function E(x){return document.getElementById(x)}var canvas=E("canvas"),ctx=canvas.getContext("2d"),wrap=E("wrap"),game=E("game");
 var W=900,H=600,DPR=1,vocab=[],queue=[],current=null,stones=[],misses={},score=0,lives=3,round=1,done=0,running=false,paused=false,soundOn=true,audioCtx=null,lang="de-DE",raf=0,last=0,invincible=0,keys={},frog={x:.5,row:0,jump:0,fromRow:0,toRow:0,dir:1},rows=[.90,.73,.56,.39,.22,.07],rowDirs=[0,1,-1,1,-1,0],rowSpeed=[0,.0768,.0928,.0864,.1072,0],boostHeld=false,boostFactor=1;
@@ -32,7 +32,7 @@ function start(pairs,locale){
  if(!Array.isArray(pairs)||pairs.length<5||pairs.some(function(p){return !Array.isArray(p)||typeof p[0]!=="string"||typeof p[1]!=="string"||!p[0].trim()||!p[1].trim()}))return false;
  lang=["de-DE","es-ES","da-DK","en-US","fr-FR","it-IT"].includes(locale)?locale:"es-ES";
  vocab=pairs.map(function(p,i){return{id:i,target:p[1],prompt:p[0]}});
- score=0;lives=3;round=1;done=0;misses={};rowSpeed=[0,.0768,.0928,.0864,.1072,0];frog.x=.5;frog.row=0;frog.dir=1;frog.jump=0;frog.riding=null;invincible=0;boostHeld=false;boostFactor=1;running=true;paused=false;last=0;build();current=queue.shift();seed();hud();E("engineTest").classList.remove("active");game.classList.add("active");E("gameOver").classList.remove("show");E("pauseOverlay").classList.remove("show");E("pause").textContent="PAUSE";resize();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return true
+ score=0;lives=3;round=1;done=0;misses={};rowSpeed=[0,.0768,.0928,.0864,.1072,0];frog.x=.5;frog.row=0;frog.dir=1;frog.jump=0;frog.riding=null;invincible=0;boostHeld=false;boostFactor=1;clearBankInput();running=true;paused=false;last=0;build();current=queue.shift();seed();hud();E("engineTest").classList.remove("active");game.classList.add("active");E("gameOver").classList.remove("show");E("pauseOverlay").classList.remove("show");E("pause").textContent="PAUSE";resize();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return true
 }
 function returnToMenu(){running=false;paused=false;boostHeld=false;boostFactor=1;cancelAnimationFrame(raf);game.classList.remove("active");if(window.parent!==window){window.parent.postMessage({type:"BT_FROG_MENU"},location.origin)}else E("engineTest").classList.add("active")}
 function leap(step){
@@ -71,16 +71,46 @@ function land(){
  hud()
 }
 function wrapDist(a,b){var d=a-b;while(d>.6)d-=1.2;while(d<-.6)d+=1.2;return d}function hurt(t){if(invincible>0)return;lives--;invincible=.8;bad();flash(t,0);hud();if(lives<=0){running=false;E("gameOver").classList.add("show")}}
+var bankKeys=new Set(), bankPointers=new Map();
+function clearBankInput(){bankKeys.clear();bankPointers.clear()}
+window.addEventListener("blur",clearBankInput);
+document.addEventListener("visibilitychange",function(){if(document.hidden)clearBankInput()});
 function update(dt){
+ if(!frog.jump&&(frog.row===0||frog.row===5)){
+   var directions=[...bankKeys,...bankPointers.values()];
+   var direction=Number(directions.some(d=>d===1||d==="arrowright"||d==="d"))-Number(directions.some(d=>d===-1||d==="arrowleft"||d==="a"));
+   frog.x=Math.max(.06,Math.min(.94,frog.x+direction*.55*dt));
+ }
+
 var targetBoost=boostHeld?3.2:1;boostFactor+=(targetBoost-boostFactor)*Math.min(1,dt*8);if(invincible>0)invincible-=dt;if(frog.jump>0){frog.jump+=dt/.34;if(frog.jump>=1)land()}else{if(frog.row>0&&frog.row<5){var nearest=null,bd=99;stones.forEach(function(s){if(s.row===frog.row){var d=Math.abs(wrapDist(frog.x,s.x));if(d<bd){bd=d;nearest=s}}});if(nearest&&bd<.12){frog.riding=nearest;frog.x=nearest.x}}}
 stones.forEach(function(s){s.x+=rowDirs[s.row]*rowSpeed[s.row]*dt*boostFactor;if(s.x>1.10)s.x-=1.20;if(s.x<-.10)s.x+=1.20});if(frog.riding&&frog.jump===0){frog.x=frog.riding.x}}
 function audio(){if(!soundOn)return null;try{var A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!audioCtx)audioCtx=new A();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}catch(e){return null}}function beep(f,d,e){var a=audio();if(!a)return;var o=a.createOscillator(),g=a.createGain(),n=a.currentTime;o.type="square";o.frequency.setValueAtTime(f,n);if(e)o.frequency.exponentialRampToValueAtTime(e,n+d);g.gain.setValueAtTime(.035,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(a.destination);o.start();o.stop(n+d)}function good(){beep(440,.06);setTimeout(function(){beep(660,.07)},60);setTimeout(function(){beep(880,.09)},125)}function bad(){beep(170,.17,75)}function speak(t){if(!soundOn)return; if(window.parent!==window)window.parent.postMessage({type:"BT_FROG_SPEAK",text:t,language:lang},location.origin)}
 function flash(t,ok){var x=E("toast");x.textContent=t;x.style.color=ok?"#79ff70":"#ff6b77";x.style.display="block";clearTimeout(flash.t);flash.t=setTimeout(function(){x.style.display="none"},650)}
-function drawStone(s){var x=s.x*W,y=rows[s.row]*H,w=s.w*W,h=s.h*H;ctx.fillStyle="#4c514e";ctx.fillRect(x-w/2,y-h/2,w,h);ctx.fillStyle="#7a807a";ctx.fillRect(x-w*.43,y-h*.42,w*.86,h*.66);ctx.fillStyle="#a6aaa0";ctx.fillRect(x-w*.30,y-h*.32,w*.42,h*.15);ctx.font="900 "+Math.max(10,Math.min(15,H*.024))+"px Courier New";ctx.textAlign="center";ctx.textBaseline="middle";var tw=Math.min(Math.max(54,ctx.measureText(s.pair.target).width+12),w*.96);ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,y-12,tw+4,24);ctx.fillStyle="#f3d64e";ctx.fillRect(x-tw/2,y-10,tw,20);ctx.fillStyle="#152945";ctx.fillText(s.pair.target,x,y,tw-5)}
-function drawFrog(){var y;if(frog.jump>0){var a=Math.min(1,frog.jump),fy=rows[frog.fromRow],ty=rows[frog.toRow];y=(fy+(ty-fy)*a-Math.sin(Math.PI*a)*.055)*H}else y=rows[frog.row]*H;var x=frog.x*W,u=Math.max(2,Math.floor(H/240));ctx.save();if(invincible>0&&Math.floor(invincible*12)%2===0)ctx.globalAlpha=.35;ctx.fillStyle="#153c2a";ctx.fillRect(x-9*u,y-5*u,18*u,10*u);ctx.fillStyle="#57bd50";ctx.fillRect(x-7*u,y-8*u,14*u,12*u);ctx.fillRect(x-10*u,y-3*u,5*u,7*u);ctx.fillRect(x+5*u,y-3*u,5*u,7*u);ctx.fillStyle="#82dd61";ctx.fillRect(x-5*u,y-7*u,10*u,5*u);ctx.fillStyle="#fff";ctx.fillRect(x-6*u,y-9*u,4*u,4*u);ctx.fillRect(x+2*u,y-9*u,4*u,4*u);ctx.fillStyle="#152945";ctx.fillRect(x-5*u,y-8*u,2*u,2*u);ctx.fillRect(x+3*u,y-8*u,2*u,2*u);ctx.fillRect(x-3*u,y,6*u,2*u);ctx.restore();if(current){ctx.font="900 "+Math.max(10,Math.min(14,H*.022))+"px Courier New";var t=current.prompt.toUpperCase(),tw=Math.min(ctx.measureText(t).width+16,W*.25),py=(frog.dir===1?y+12*u:y-12*u-25);if(py<4)py=y+12*u;if(py+25>H-4)py=y-12*u-25;py=Math.max(4,Math.min(H-29,py));ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,py,tw+4,25);ctx.fillStyle="#fff8d9";ctx.fillRect(x-tw/2,py+2,tw,21);ctx.fillStyle="#26713d";ctx.textAlign="center";ctx.fillText(t,x,py+13,tw-5)}}
+function drawStone(s){var x=s.x*W,y=rows[s.row]*H,w=s.w*W,h=s.h*H;ctx.fillStyle="#4c514e";ctx.fillRect(x-w/2,y-h/2,w,h);ctx.fillStyle="#7a807a";ctx.fillRect(x-w*.43,y-h*.42,w*.86,h*.66);ctx.fillStyle="#a6aaa0";ctx.fillRect(x-w*.30,y-h*.32,w*.42,h*.15);ctx.font="900 "+Math.max(16,Math.min(24,H*.034))+"px Courier New";ctx.textAlign="center";ctx.textBaseline="middle";var tw=Math.min(Math.max(54,ctx.measureText(s.pair.target).width+12),W*.22);ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,y-16,tw+4,32);ctx.fillStyle="#f3d64e";ctx.fillRect(x-tw/2,y-14,tw,28);ctx.fillStyle="#152945";ctx.fillText(s.pair.target,x,y,tw-5)}
+function drawFrog(){var y;if(frog.jump>0){var a=Math.min(1,frog.jump),fy=rows[frog.fromRow],ty=rows[frog.toRow];y=(fy+(ty-fy)*a-Math.sin(Math.PI*a)*.055)*H}else y=rows[frog.row]*H;var x=frog.x*W,u=Math.max(2,Math.floor(H/240));ctx.save();if(invincible>0&&Math.floor(invincible*12)%2===0)ctx.globalAlpha=.35;var sprite=[
+ "....gg........gg....",
+ "...glgggggggggglg...",
+ "..glllgGGGGGglllg..",
+ "..gkllgGGGGGgllkg..",
+ "..gkkllGGGGGllkkg..",
+ "...gllGGGGGGGllg...",
+ "....ggGyyyyyGgg....",
+ "...ggGyyyyyyyGgg...",
+ "..gGGGyyyyyyyGGGg..",
+ ".gGGgGaaaaaaaGgGGg.",
+ ".gGggGaaaaaaaGggGg.",
+ "gGGg.GGaaaaaGG.gGGg",
+ "gGGgggGaaaaaGgggGGg",
+ "ggggggggggggggggggg"
+ ],palette={g:"#193b27",G:"#69b640",l:"#c1e867",k:"#10281c",y:"#fff192",a:"#e8aa37"};
+ sprite.forEach((row,j)=>[...row].forEach((color,i)=>{
+   if(!palette[color])return;
+   ctx.fillStyle=palette[color];
+   ctx.fillRect(Math.round(x-10*u)+i*u,Math.round(y-9*u)+j*u,u,u);
+ }));ctx.restore();if(current){ctx.font="900 "+Math.max(15,Math.min(21,H*.030))+"px Courier New";var t=current.prompt.toUpperCase(),tw=Math.min(ctx.measureText(t).width+16,W*.4),py=(frog.dir===1?y+12*u:y-12*u-25);if(py<4)py=y+12*u;if(py+25>H-4)py=y-12*u-25;py=Math.max(4,Math.min(H-29,py));ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,py,tw+4,25);ctx.fillStyle="#fff8d9";ctx.fillRect(x-tw/2,py+2,tw,21);ctx.fillStyle="#26713d";ctx.textAlign="center";ctx.fillText(t,x,py+13,tw-5)}}
 function drawFrogWrapped(){drawFrog();if(frog.x<.20||frog.x>.80){ctx.save();ctx.translate((frog.x<.20?1.2:-1.2)*W,0);drawFrog();ctx.restore()}}
 function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle="#5ea94d";ctx.fillRect(0,0,W,H);ctx.fillStyle="#278cc3";ctx.fillRect(0,H*.12,W,H*.72);ctx.fillStyle="#48a9d0";for(var i=0;i<10;i++){var yy=H*(.16+i*.07);ctx.fillRect((i%2)*W*.18,yy,W*.28,3);ctx.fillRect(W*.58,yy,W*.24,3)}ctx.fillStyle="#c9b46a";ctx.fillRect(0,H*.84,W,H*.16);ctx.fillRect(0,0,W,H*.12);ctx.fillStyle="#397c3c";for(var x=0;x<W;x+=42){ctx.fillRect(x,H*.82,24,8);ctx.fillRect(x+14,H*.09,26,9)}stones.forEach(function(st){drawStone(st);var ox=st.x;if(ox<.20){st.x=ox+1.2;drawStone(st);st.x=ox}else if(ox>.80){st.x=ox-1.2;drawStone(st);st.x=ox}});drawFrogWrapped()}
-function resize(){W=Math.max(1,wrap.clientWidth);H=Math.max(1,wrap.clientHeight);DPR=Math.max(1,devicePixelRatio||1);canvas.width=W*DPR;canvas.height=H*DPR;canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(DPR,0,0,DPR,0,0);draw()}function loop(n){if(!running||paused)return;if(!last)last=n;var dt=Math.min(.04,(n-last)/1000);last=n;update(dt);draw();if(running)raf=requestAnimationFrame(loop)}function pause(){if(!running)return;paused=!paused;if(paused)boostHeld=false;E("pauseOverlay").classList.toggle("show",paused);E("pause").textContent=paused?"RESUME":"PAUSE";if(!paused){last=0;raf=requestAnimationFrame(loop)}}
+function resize(){W=Math.max(1,wrap.clientWidth);H=Math.max(1,wrap.clientHeight);DPR=Math.max(1,devicePixelRatio||1);canvas.width=W*DPR;canvas.height=H*DPR;canvas.style.width=W+"px";canvas.style.height=H+"px";ctx.setTransform(DPR,0,0,DPR,0,0);draw()}function loop(n){if(!running||paused)return;if(!last)last=n;var dt=Math.min(.04,(n-last)/1000);last=n;update(dt);draw();if(running)raf=requestAnimationFrame(loop)}function pause(){if(!running)return;paused=!paused;if(paused){boostHeld=false;clearBankInput();}E("pauseOverlay").classList.toggle("show",paused);E("pause").textContent=paused?"RESUME":"PAUSE";if(!paused){last=0;raf=requestAnimationFrame(loop)}}
 E("again").onclick=function(){start(vocab.map(function(v){return[v.prompt,v.target]}),lang)};
 E("restart").onclick=E("again").onclick;E("pause").onclick=pause;
 E("mainMenu").onclick=returnToMenu;E("overMenu").onclick=returnToMenu;
@@ -89,6 +119,11 @@ E("testStart").onclick=function(){start([["frog","rana"],["cat","gato"],["dog","
 window.addEventListener("keydown",function(e){
  if(!game.classList.contains("active"))return;
  var k=e.key.toLowerCase();
+ if(["arrowleft","arrowright","a","d"].includes(k)){
+   e.preventDefault();
+   if(running&&!paused&&!e.repeat)bankKeys.add(k);
+   return;
+ }
  if(e.code==="Space"||k==="arrowup"||k==="arrowdown"||k==="w"||k==="s")e.preventDefault();
  if(e.code==="Space"){boostHeld=true;return}
  if((k==="arrowup"||k==="w")&&!e.repeat&&frog.dir===1)leap(1);
@@ -96,9 +131,23 @@ window.addEventListener("keydown",function(e){
  if(k==="p"&&!e.repeat)pause()
 },{passive:false});
 window.addEventListener("keyup",function(e){
+ var k=e.key.toLowerCase();
+ bankKeys.delete(k);
  if(e.code==="Space"){e.preventDefault();boostHeld=false}
 },{passive:false});
 function touchLeap(id,step,dir){var b=E(id);b.addEventListener("pointerdown",function(e){e.preventDefault();if(frog.dir===dir)leap(step);},{passive:false});b.addEventListener("contextmenu",function(e){e.preventDefault()});}
+for(const [id,direction] of [["touchLeft",-1],["touchRight",1]]){
+ const button=E(id);
+ button.addEventListener("pointerdown",function(e){
+   e.preventDefault();
+   if(!running||paused)return;
+   button.setPointerCapture(e.pointerId);
+   bankPointers.set(e.pointerId,direction);
+ });
+ for(const event of ["pointerup","pointercancel","lostpointercapture"]){
+   button.addEventListener(event,e=>bankPointers.delete(e.pointerId));
+ }
+}
 touchLeap("touchForward",1,1);touchLeap("touchBack",-1,-1);
 (function(){var b=E("touchBoost");function release(){boostHeld=false;}b.addEventListener("pointerdown",function(e){e.preventDefault();if(!running||paused)return;boostHeld=true;try{b.setPointerCapture(e.pointerId)}catch(x){}},{passive:false});["pointerup","pointercancel","lostpointercapture"].forEach(function(t){b.addEventListener(t,release)});b.addEventListener("contextmenu",function(e){e.preventDefault()});window.addEventListener("blur",release);document.addEventListener("visibilitychange",function(){if(document.hidden)release()});})();
 window.addEventListener("resize",resize);
