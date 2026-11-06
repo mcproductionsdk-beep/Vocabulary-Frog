@@ -46,6 +46,13 @@ function crossingBonus(){
  frog.dir*=-1; /* the bank becomes the new safe starting side */
  seedTargetRow();hud()
 }
+function resetToBank(){
+ frog.row=frog.dir===1?0:5;
+ frog.x=.5;
+ frog.riding=null;
+ clearBankInput();
+ seedTargetRow();
+}
 function land(){
  frog.row=frog.toRow;frog.jump=0;frog.riding=null;
  /* Both banks are safe. Reaching the destination bank reverses the journey. */
@@ -57,7 +64,7 @@ function land(){
  stones.forEach(function(s){if(s.row===frog.row){var d=Math.abs(wrapDist(frog.x,s.x));if(d<bd){bd=d;best=s}}});
  if(!best||bd>.105){
    hurt("SPLASH!");
-   frog.row=(frog.dir===1?0:5);frog.x=.5;seedTargetRow();return
+   resetToBank();return
  }
  frog.x=best.x;frog.riding=best;
  if(best.pair.id===current.id){
@@ -66,7 +73,7 @@ function land(){
  }else{
    misses[current.id]=Math.min(2,(misses[current.id]||0)+1);
    hurt("✕ "+best.pair.target.toUpperCase());
-   frog.row=(frog.dir===1?0:5);frog.x=.5;seedTargetRow()
+   resetToBank()
  }
  hud()
 }
@@ -103,10 +110,11 @@ function drawFrog(){var y;if(frog.jump>0){var a=Math.min(1,frog.jump),fy=rows[fr
  "gGGgggGaaaaaGgggGGg",
  "ggggggggggggggggggg"
  ],palette={g:"#193b27",G:"#69b640",l:"#c1e867",k:"#10281c",y:"#fff192",a:"#e8aa37"};
+ var pixel=u*1.2;
  sprite.forEach((row,j)=>[...row].forEach((color,i)=>{
    if(!palette[color])return;
    ctx.fillStyle=palette[color];
-   ctx.fillRect(Math.round(x-10*u)+i*u,Math.round(y-9*u)+j*u,u,u);
+   ctx.fillRect(Math.round(x-10*pixel)+i*pixel,Math.round(y-9*u)+j*pixel,pixel,pixel);
  }));ctx.restore();if(current){ctx.font="900 "+Math.max(15,Math.min(21,H*.030))+"px Courier New";var t=current.prompt.toUpperCase(),tw=Math.min(ctx.measureText(t).width+16,W*.4),py=(frog.dir===1?y+12*u:y-12*u-25);if(py<4)py=y+12*u;if(py+25>H-4)py=y-12*u-25;py=Math.max(4,Math.min(H-29,py));ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,py,tw+4,25);ctx.fillStyle="#fff8d9";ctx.fillRect(x-tw/2,py+2,tw,21);ctx.fillStyle="#26713d";ctx.textAlign="center";ctx.fillText(t,x,py+13,tw-5)}}
 function drawFrogWrapped(){drawFrog();if(frog.x<.20||frog.x>.80){ctx.save();ctx.translate((frog.x<.20?1.2:-1.2)*W,0);drawFrog();ctx.restore()}}
 function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle="#5ea94d";ctx.fillRect(0,0,W,H);ctx.fillStyle="#278cc3";ctx.fillRect(0,H*.12,W,H*.72);ctx.fillStyle="#48a9d0";for(var i=0;i<10;i++){var yy=H*(.16+i*.07);ctx.fillRect((i%2)*W*.18,yy,W*.28,3);ctx.fillRect(W*.58,yy,W*.24,3)}ctx.fillStyle="#c9b46a";ctx.fillRect(0,H*.84,W,H*.16);ctx.fillRect(0,0,W,H*.12);ctx.fillStyle="#397c3c";for(var x=0;x<W;x+=42){ctx.fillRect(x,H*.82,24,8);ctx.fillRect(x+14,H*.09,26,9)}stones.forEach(function(st){drawStone(st);var ox=st.x;if(ox<.20){st.x=ox+1.2;drawStone(st);st.x=ox}else if(ox>.80){st.x=ox-1.2;drawStone(st);st.x=ox}});drawFrogWrapped()}
