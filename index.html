@@ -45,13 +45,14 @@ body{background:#203a67}
  }
  #game .mobile-controls .boost:active{background:#f3d64e;color:#102744}
 }
+.shell-managed .logo,.shell-managed #game .buttons,.shell-managed #again,.shell-managed #overMenu{display:none!important}
 </style></head><body><main class="app"><div class="logo">VOCABULARY FROG</div>
 <section id="engineTest" class="screen active"><div class="card" style="text-align:center"><h2>VOCABULARY FROG · ENGINE TEST</h2><p>Gameplay only · Sample vocabulary · No teacher menu</p><button id="testStart" class="primary">TEST FROG ENGINE</button><div id="engineError" class="error"></div></div></section><section id="game" class="screen"><div class="hud"><div>SCORE <span id="score">0</span> · <span id="lives">❤❤❤</span></div><div id="target" class="target"></div><div id="progress" class="progress"></div></div><div id="wrap" class="wrap"><canvas id="canvas"></canvas><div id="toast" class="toast"></div><div id="pauseOverlay" class="overlay"><div class="big" style="color:#f3d64e">PAUSED</div></div><div id="gameOver" class="overlay"><div><div class="big">GAME OVER</div><div class="msg">Nice try, your grandma would be proud</div><button id="again" class="primary">PLAY AGAIN</button><button id="overMenu" class="pink">MAIN MENU</button></div></div></div><div class="buttons"><button id="pause" class="yellow">PAUSE</button><button id="restart">RESTART</button><button id="mainMenu" class="pink">MAIN MENU</button><button id="sound">🔊 SOUND ON</button></div><div class="mobile-controls" aria-label="Touch controls"><button id="touchLeft" type="button" aria-label="Move left">◀<span class="direction-label">LEFT</span></button><button id="touchForward" class="forward" type="button" aria-label="Hop forward">▲<span class="direction-label">UP</span></button><button id="touchBack" class="back" type="button" aria-label="Hop back"><span class="direction-label">DOWN</span>▼</button><span class="slide-label" aria-hidden="true">SLIDE</span><button id="touchBoost" class="boost" type="button" aria-label="Hold to boost">BOOST</button><button id="touchRight" type="button" aria-label="Move right"><span class="direction-label">RIGHT</span>▶</button></div><div class="tip">BANK: ← → / A D · FORWARD: ↑ / W · BACK: ↓ / S · BOOST: SPACE · PAUSE: P</div></section></main>
 <script>
 (function(){"use strict";function E(x){return document.getElementById(x)}var canvas=E("canvas"),ctx=canvas.getContext("2d"),wrap=E("wrap"),game=E("game");
 var W=900,H=600,DPR=1,vocab=[],queue=[],current=null,stones=[],misses={},score=0,lives=3,round=1,done=0,running=false,paused=false,soundOn=true,audioCtx=null,lang="de-DE",raf=0,last=0,invincible=0,keys={},frog={x:.5,row:0,jump:0,fromRow:0,toRow:0,dir:1},rows=[.90,.73,.56,.39,.22,.07],rowDirs=[0,1,-1,1,-1,0],rowSpeed=[0,.0768,.0928,.0864,.1072,0],boostHeld=false,boostFactor=1;
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}function build(){queue=shuffle(vocab);queue=queue.concat(shuffle(vocab.filter(function(v){return(misses[v.id]||0)>0})));done=0}function next(){if(!queue.length){round++;for(var i=1;i<5;i++)rowSpeed[i]*=1.075;build();flash("ROUND "+round+" · RIVER SPEED UP!",1)}current=queue.shift();hud();seedTargetRow()}
-function hud(){E("score").textContent=score;E("lives").textContent="❤".repeat(Math.max(0,lives));E("target").innerHTML="FIND: <b>"+current.prompt.toUpperCase()+"</b>";E("progress").textContent=(frog.dir===1?"↑ CROSS UP":"↓ CROSS BACK")+" · ROUND "+round+" · "+Math.min(done,vocab.length)+"/"+vocab.length}
+function hud(){emit({type:"BT_FROG_STATE",...state()});E("score").textContent=score;E("lives").textContent="❤".repeat(Math.max(0,lives));E("target").textContent="FIND: "+current.prompt.toUpperCase();E("progress").textContent=(frog.dir===1?"↑ CROSS UP":"↓ CROSS BACK")+" · ROUND "+round+" · "+Math.min(done,vocab.length)+"/"+vocab.length}
 function makeStone(row,x,pair){return{row:row,x:x,pair:pair,w:.17,h:.075}}function seed(){stones=[];for(var r=1;r<=4;r++){for(var j=0;j<4;j++){var pair=vocab[Math.floor(Math.random()*vocab.length)];stones.push(makeStone(r,.12+j*.27+(r%2)*.07,pair))}}seedTargetRow()}
 function seedTargetRow(){if(!current||!stones.length)return;var r=frog.row+frog.dir;if(r<1||r>4)return;var arr=stones.filter(function(s){return s.row===r});if(arr.length)arr[Math.floor(Math.random()*arr.length)].pair=current}
 function start(pairs,locale){
@@ -60,7 +61,7 @@ function start(pairs,locale){
  vocab=pairs.map(function(p,i){return{id:i,target:p[1],prompt:p[0]}});
  score=0;lives=3;round=1;done=0;misses={};rowSpeed=[0,.0768,.0928,.0864,.1072,0];frog.x=.5;frog.row=0;frog.dir=1;frog.jump=0;frog.riding=null;invincible=0;boostHeld=false;boostFactor=1;clearBankInput();running=true;paused=false;last=0;build();current=queue.shift();seed();hud();E("engineTest").classList.remove("active");game.classList.add("active");E("gameOver").classList.remove("show");E("pauseOverlay").classList.remove("show");E("pause").textContent="PAUSE";resize();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return true
 }
-function returnToMenu(){running=false;paused=false;boostHeld=false;boostFactor=1;cancelAnimationFrame(raf);game.classList.remove("active");if(window.parent!==window){window.parent.postMessage({type:"BT_FROG_MENU"},location.origin)}else E("engineTest").classList.add("active")}
+function returnToMenu(){running=false;paused=false;boostHeld=false;boostFactor=1;cancelAnimationFrame(raf);game.classList.remove("active");if(window.parent!==window){emit({type:"BT_FROG_MENU"})}else E("engineTest").classList.add("active")}
 function leap(step){
  if(!running||paused||frog.jump>0)return;
  var nr=frog.row+step;
@@ -103,7 +104,7 @@ function land(){
  }
  hud()
 }
-function wrapDist(a,b){var d=a-b;while(d>.6)d-=1.2;while(d<-.6)d+=1.2;return d}function hurt(t){if(invincible>0)return;lives--;invincible=.8;bad();flash(t,0);hud();if(lives<=0){running=false;E("gameOver").classList.add("show")}}
+function wrapDist(a,b){var d=a-b;while(d>.6)d-=1.2;while(d<-.6)d+=1.2;return d}function hurt(t){if(invincible>0)return;lives--;invincible=.8;bad();flash(t,0);hud();if(lives<=0){running=false;E("gameOver").classList.add("show");hud()}}
 var bankKeys=new Set(), bankPointers=new Map();
 var swipe=null;
 function clearBankInput(){bankKeys.clear();bankPointers.clear();swipe=null}
@@ -118,7 +119,7 @@ function update(dt){
 
 var targetBoost=boostHeld?3.2:1;boostFactor+=(targetBoost-boostFactor)*Math.min(1,dt*8);if(invincible>0)invincible-=dt;if(frog.jump>0){frog.jump+=dt/.34;if(frog.jump>=1)land()}else{if(frog.row>0&&frog.row<5){var nearest=null,bd=99;stones.forEach(function(s){if(s.row===frog.row){var d=Math.abs(wrapDist(frog.x,s.x));if(d<bd){bd=d;nearest=s}}});if(nearest&&bd<.12){frog.riding=nearest;frog.x=nearest.x}}}
 stones.forEach(function(s){s.x+=rowDirs[s.row]*rowSpeed[s.row]*dt*boostFactor;if(s.x>1.10)s.x-=1.20;if(s.x<-.10)s.x+=1.20});if(frog.riding&&frog.jump===0){frog.x=frog.riding.x}}
-function audio(){if(!soundOn)return null;try{var A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!audioCtx)audioCtx=new A();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}catch(e){return null}}function beep(f,d,e){var a=audio();if(!a)return;var o=a.createOscillator(),g=a.createGain(),n=a.currentTime;o.type="square";o.frequency.setValueAtTime(f,n);if(e)o.frequency.exponentialRampToValueAtTime(e,n+d);g.gain.setValueAtTime(.035,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(a.destination);o.start();o.stop(n+d)}function good(){beep(440,.06);setTimeout(function(){beep(660,.07)},60);setTimeout(function(){beep(880,.09)},125)}function bad(){beep(170,.17,75)}function speak(t){if(!soundOn)return; if(window.parent!==window)window.parent.postMessage({type:"BT_FROG_SPEAK",text:t,language:lang},location.origin)}
+function audio(){if(!soundOn)return null;try{var A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!audioCtx)audioCtx=new A();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}catch(e){return null}}function beep(f,d,e){var a=audio();if(!a)return;var o=a.createOscillator(),g=a.createGain(),n=a.currentTime;o.type="square";o.frequency.setValueAtTime(f,n);if(e)o.frequency.exponentialRampToValueAtTime(e,n+d);g.gain.setValueAtTime(.035,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(a.destination);o.start();o.stop(n+d)}function good(){beep(440,.06);setTimeout(function(){beep(660,.07)},60);setTimeout(function(){beep(880,.09)},125)}function bad(){beep(170,.17,75)}function speak(t){if(!soundOn)return; if(window.parent!==window)emit({type:"BT_FROG_SPEAK",text:t})}
 function flash(t,ok){var x=E("toast");x.textContent=t;x.style.color=ok?"#79ff70":"#ff6b77";x.style.display="block";clearTimeout(flash.t);flash.t=setTimeout(function(){x.style.display="none"},650)}
 function drawStone(s){var x=s.x*W,y=rows[s.row]*H,w=s.w*W,h=s.h*H;ctx.fillStyle="#4c514e";ctx.fillRect(x-w/2,y-h/2,w,h);ctx.fillStyle="#7a807a";ctx.fillRect(x-w*.43,y-h*.42,w*.86,h*.66);ctx.fillStyle="#a6aaa0";ctx.fillRect(x-w*.30,y-h*.32,w*.42,h*.15);ctx.font="900 "+Math.max(16,Math.min(24,H*.034))+"px Courier New";ctx.textAlign="center";ctx.textBaseline="middle";var tw=Math.min(Math.max(54,ctx.measureText(s.pair.target).width+12),W*.22);ctx.fillStyle="#152945";ctx.fillRect(x-tw/2-2,y-16,tw+4,32);ctx.fillStyle="#f3d64e";ctx.fillRect(x-tw/2,y-14,tw,28);ctx.fillStyle="#152945";ctx.fillText(s.pair.target,x,y,tw-5)}
 function drawFrog(){var y;if(frog.jump>0){var a=Math.min(1,frog.jump),fy=rows[frog.fromRow],ty=rows[frog.toRow];y=(fy+(ty-fy)*a-Math.sin(Math.PI*a)*.055)*H}else y=rows[frog.row]*H;var x=frog.x*W,u=Math.max(2,Math.floor(H/240));ctx.save();if(invincible>0&&Math.floor(invincible*12)%2===0)ctx.globalAlpha=.35;var sprite=[
@@ -206,14 +207,25 @@ for(const event of ["pointercancel","lostpointercapture"]){
 touchLeap("touchForward",1,1);touchLeap("touchBack",-1,-1);
 (function(){var b=E("touchBoost");function release(){boostHeld=false;}b.addEventListener("pointerdown",function(e){e.preventDefault();if(!running||paused)return;boostHeld=true;try{b.setPointerCapture(e.pointerId)}catch(x){}},{passive:false});["pointerup","pointercancel","lostpointercapture"].forEach(function(t){b.addEventListener(t,release)});b.addEventListener("contextmenu",function(e){e.preventDefault()});window.addEventListener("blur",release);document.addEventListener("visibilitychange",function(){if(document.hidden)release()});})();
 window.addEventListener("resize",resize);
-window.addEventListener("message",function(e){
- if(e.origin!==location.origin||e.source!==window.parent||!e.data)return;
- var d=e.data;
- if(d.type==="BT_FROG_PING"){window.parent.postMessage({type:"BT_FROG_READY"},location.origin);return}
- if(d.type==="BT_FROG_START"){
-  try{if(!start(d.pairs,d.language))throw Error("At least 5 valid vocabulary pairs are required");window.parent.postMessage({type:"BT_FROG_STARTED"},location.origin)}
-  catch(err){window.parent.postMessage({type:"BT_FROG_START_FAILED",error:String(err.message||err)},location.origin)}
- }
-});
-if(window.parent!==window){E("engineTest").classList.remove("active");window.parent.postMessage({type:"BT_FROG_READY"},location.origin);}
-})();</script></body></html>
+let subscriber=null, sessionSet=null, disposed=false;
+function emit(event){subscriber?.(event)}
+function state(){
+ return {status:disposed?"disposed":lives<=0?"ended":running&&!paused?"running":"paused",soundOn,score,lives,round,done};
+}
+window.BTFrog={
+ initialize(set){
+   if(!Array.isArray(set.pairs)||set.pairs.length<5||!set.pairs.every(p=>Array.isArray(p)&&p.length===2&&p.every(v=>typeof v==="string"&&v.trim())))return false;
+   sessionSet=set;
+   return true;
+ },
+ setShellManaged(value){document.body.classList.toggle("shell-managed",value);return true},
+ subscribe(handler){if(subscriber)return false;subscriber=handler;return true},
+ resume(){if(!sessionSet)return false;if(!running){if(lives<=0)return false;return this.restart()}if(paused)pause();return true},
+ pause(){if(running&&!paused)pause();return true},
+ restart(){return !!sessionSet&&start(sessionSet.pairs,sessionSet.language)},
+ setSound(value){if(typeof value!=="boolean")return false;soundOn=value;return true},
+ resize,state,
+ dispose(){disposed=true;running=false;boostHeld=false;clearBankInput();cancelAnimationFrame(raf);subscriber=null}
+};
+if(window.parent!==window)E("engineTest").classList.remove("active");
+})();</script><script type="module" src="./bootstrap.mjs"></script></body></html>
