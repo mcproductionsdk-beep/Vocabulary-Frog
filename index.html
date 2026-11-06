@@ -17,7 +17,7 @@ body{background:#203a67}
  #game .hud{grid-template-columns:1fr auto;gap:3px}
  #game .target{grid-column:1/-1;grid-row:1;justify-self:center;max-width:100%}
  #game .mobile-controls{
-   flex:none;grid-template-columns:repeat(3,44px) minmax(0,1fr) 54px;
+   flex:none;grid-template-columns:minmax(44px,1fr) 44px minmax(44px,1fr) minmax(64px,2fr);
    grid-template-rows:repeat(3,44px);gap:2px;
    margin-top:3px;padding:3px 8px;
    background:#0b203a;border:2px solid #3c5b78;border-radius:10px;
@@ -28,19 +28,25 @@ body{background:#203a67}
  }
  #game .mobile-controls button:active{background:#294969;color:#fff}
  #game .wrap{touch-action:none}
+ #game .mobile-controls .direction-label{font-size:9px;color:#e6ce79}
+ #game .mobile-controls .slide-label{
+   grid-area:2 / 2;place-self:center;color:#e6ce79;font-size:10px;pointer-events:none;
+ }
+ #game .mobile-controls button:not(.boost){display:flex;align-items:center;justify-content:center;gap:2px}
+ #touchForward,#touchBack{flex-direction:column}
  #touchForward{grid-area:1 / 2}
  #touchLeft{grid-area:2 / 1;justify-self:end}
  #touchRight{grid-area:2 / 3;justify-self:start}
  #touchBack{grid-area:3 / 2}
  #game .mobile-controls .boost{
-   grid-area:3 / 5;justify-self:end;width:54px;height:54px;align-self:end;
+   grid-area:1 / 4 / 4 / 5;justify-self:center;width:58px;height:58px;align-self:center;
    border:2px solid #526b84;border-radius:50%;background:#132c49;
    color:#f3d64e;font-size:10px;
  }
  #game .mobile-controls .boost:active{background:#f3d64e;color:#102744}
 }
 </style></head><body><main class="app"><div class="logo">VOCABULARY FROG</div>
-<section id="engineTest" class="screen active"><div class="card" style="text-align:center"><h2>VOCABULARY FROG · ENGINE TEST</h2><p>Gameplay only · Sample vocabulary · No teacher menu</p><button id="testStart" class="primary">TEST FROG ENGINE</button><div id="engineError" class="error"></div></div></section><section id="game" class="screen"><div class="hud"><div>SCORE <span id="score">0</span> · <span id="lives">❤❤❤</span></div><div id="target" class="target"></div><div id="progress" class="progress"></div></div><div id="wrap" class="wrap"><canvas id="canvas"></canvas><div id="toast" class="toast"></div><div id="pauseOverlay" class="overlay"><div class="big" style="color:#f3d64e">PAUSED</div></div><div id="gameOver" class="overlay"><div><div class="big">GAME OVER</div><div class="msg">Nice try, your grandma would be proud</div><button id="again" class="primary">PLAY AGAIN</button><button id="overMenu" class="pink">MAIN MENU</button></div></div></div><div class="buttons"><button id="pause" class="yellow">PAUSE</button><button id="restart">RESTART</button><button id="mainMenu" class="pink">MAIN MENU</button><button id="sound">🔊 SOUND ON</button></div><div class="mobile-controls" aria-label="Touch controls"><button id="touchLeft" type="button" aria-label="Move left">◀</button><button id="touchForward" class="forward" type="button" aria-label="Hop forward">▲</button><button id="touchBack" class="back" type="button" aria-label="Hop back">▼</button><button id="touchBoost" class="boost" type="button" aria-label="Hold to boost">BOOST</button><button id="touchRight" type="button" aria-label="Move right">▶</button></div><div class="tip">BANK: ← → / A D · FORWARD: ↑ / W · BACK: ↓ / S · BOOST: SPACE · PAUSE: P</div></section></main>
+<section id="engineTest" class="screen active"><div class="card" style="text-align:center"><h2>VOCABULARY FROG · ENGINE TEST</h2><p>Gameplay only · Sample vocabulary · No teacher menu</p><button id="testStart" class="primary">TEST FROG ENGINE</button><div id="engineError" class="error"></div></div></section><section id="game" class="screen"><div class="hud"><div>SCORE <span id="score">0</span> · <span id="lives">❤❤❤</span></div><div id="target" class="target"></div><div id="progress" class="progress"></div></div><div id="wrap" class="wrap"><canvas id="canvas"></canvas><div id="toast" class="toast"></div><div id="pauseOverlay" class="overlay"><div class="big" style="color:#f3d64e">PAUSED</div></div><div id="gameOver" class="overlay"><div><div class="big">GAME OVER</div><div class="msg">Nice try, your grandma would be proud</div><button id="again" class="primary">PLAY AGAIN</button><button id="overMenu" class="pink">MAIN MENU</button></div></div></div><div class="buttons"><button id="pause" class="yellow">PAUSE</button><button id="restart">RESTART</button><button id="mainMenu" class="pink">MAIN MENU</button><button id="sound">🔊 SOUND ON</button></div><div class="mobile-controls" aria-label="Touch controls"><button id="touchLeft" type="button" aria-label="Move left">◀<span class="direction-label">LEFT</span></button><button id="touchForward" class="forward" type="button" aria-label="Hop forward">▲<span class="direction-label">UP</span></button><button id="touchBack" class="back" type="button" aria-label="Hop back"><span class="direction-label">DOWN</span>▼</button><span class="slide-label" aria-hidden="true">SLIDE</span><button id="touchBoost" class="boost" type="button" aria-label="Hold to boost">BOOST</button><button id="touchRight" type="button" aria-label="Move right"><span class="direction-label">RIGHT</span>▶</button></div><div class="tip">BANK: ← → / A D · FORWARD: ↑ / W · BACK: ↓ / S · BOOST: SPACE · PAUSE: P</div></section></main>
 <script>
 (function(){"use strict";function E(x){return document.getElementById(x)}var canvas=E("canvas"),ctx=canvas.getContext("2d"),wrap=E("wrap"),game=E("game");
 var W=900,H=600,DPR=1,vocab=[],queue=[],current=null,stones=[],misses={},score=0,lives=3,round=1,done=0,running=false,paused=false,soundOn=true,audioCtx=null,lang="de-DE",raf=0,last=0,invincible=0,keys={},frog={x:.5,row:0,jump:0,fromRow:0,toRow:0,dir:1},rows=[.90,.73,.56,.39,.22,.07],rowDirs=[0,1,-1,1,-1,0],rowSpeed=[0,.0768,.0928,.0864,.1072,0],boostHeld=false,boostFactor=1;
