@@ -57,7 +57,7 @@ function makeStone(row,x,pair){return{row:row,x:x,pair:pair,w:.17,h:.075}}functi
 function seedTargetRow(){if(!current||!stones.length)return;var r=frog.row+frog.dir;if(r<1||r>4)return;var arr=stones.filter(function(s){return s.row===r});if(arr.length)arr[Math.floor(Math.random()*arr.length)].pair=current}
 function start(pairs,locale){
  if(!Array.isArray(pairs)||pairs.length<5||pairs.some(function(p){return !Array.isArray(p)||typeof p[0]!=="string"||typeof p[1]!=="string"||!p[0].trim()||!p[1].trim()}))return false;
- lang=["de-DE","es-ES","da-DK","en-US","fr-FR","it-IT"].includes(locale)?locale:"es-ES";
+ lang=["de-DE","es-ES","da-DK","en-US","fr-FR","it-IT","nb-NO","sv-SE"].includes(locale)?locale:"es-ES";
  vocab=pairs.map(function(p,i){return{id:i,target:p[1],prompt:p[0]}});
  score=0;lives=3;round=1;done=0;misses={};rowSpeed=[0,.0768,.0928,.0864,.1072,0];frog.x=.5;frog.row=0;frog.dir=1;frog.jump=0;frog.riding=null;invincible=0;boostHeld=false;boostFactor=1;clearBankInput();running=true;paused=false;last=0;build();current=queue.shift();seed();hud();E("engineTest").classList.remove("active");game.classList.add("active");E("gameOver").classList.remove("show");E("pauseOverlay").classList.remove("show");E("pause").textContent="PAUSE";resize();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);return true
 }
