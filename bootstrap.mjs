@@ -1,5 +1,5 @@
 import {attachFrogSession} from './session.mjs';
-const buildId = 'b99776f4a432db00fd8bdacd2d99c5ac9965ca00';
+const buildId = '287ed06b8f84e879d7a0611bf274ff5e5fab8ae6';
 
 let shellOrigin;
 try { shellOrigin = new URL(document.referrer).origin; } catch {}
